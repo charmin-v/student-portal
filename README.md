@@ -27,3 +27,19 @@ student-portal/
 └── scripts/
     └── utils.js
 ```
+
+## Setup Instructions
+
+1. Clone the repository:
+
+   ```
+   git clone https://github.com/charmin-v/student-portal.git
+   ```
+
+2. Change into the project folder:
+
+   ```
+   cd student-portal
+   ```
+
+3. Open `index.html` in your browser.
