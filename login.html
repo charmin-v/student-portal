@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sign in to the Student Portal with your institute email address." />
+  <title>Log in · Student Portal</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    /* Form styling lives here for now: styles/main.css has no form section yet. */
+    .auth {
+      display: grid;
+      place-items: center;
+      min-height: calc(100vh - var(--header-height) - 90px);
+      padding: var(--space-7) var(--space-5);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 26rem;
+      padding: var(--space-6);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .auth-title {
+      margin-bottom: var(--space-2);
+      font-size: var(--fs-2xl);
+    }
+
+    .auth-lede {
+      margin-bottom: var(--space-6);
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    .field {
+      margin-bottom: var(--space-5);
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: var(--space-2);
+      font-size: var(--fs-sm);
+      font-weight: 600;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: inherit;
+      font-size: var(--fs-base);
+      color: var(--color-text);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .field-input:focus {
+      border-color: var(--color-primary);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--color-primary-light);
+    }
+
+    .field-input.is-invalid {
+      border-color: var(--color-danger);
+    }
+
+    .field-error {
+      display: block;
+      margin-top: var(--space-2);
+      color: var(--color-danger);
+      font-size: var(--fs-sm);
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+      font-size: var(--fs-sm);
+    }
+
+    .field-check {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--color-text-muted);
+    }
+
+    .auth-submit {
+      width: 100%;
+    }
+
+    .auth-foot {
+      margin: var(--space-5) 0 0;
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+      text-align: center;
+    }
+  </style>
+</head>
+<body data-page="login">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">SP</span>
+        <span class="brand-text">Student Portal</span>
+      </a>
+
+      <!-- Shared navigation is rendered here by scripts/nav.js -->
+      <div id="app-nav"></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="auth">
+      <div class="auth-card">
+        <h1 class="auth-title">Log in</h1>
+        <p class="auth-lede">
+          Use your institute email address and the password you set for the portal.
+        </p>
+
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label class="field-label" for="email">Institute email</label>
+            <input
+              class="field-input"
+              id="email"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="username"
+              autocapitalize="none"
+              spellcheck="false"
+              placeholder="you@students.iiit.ac.in"
+              required
+            />
+            <span class="field-error" data-error-for="email" role="alert" hidden></span>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="password">Password</label>
+            <input
+              class="field-input"
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              minlength="8"
+              required
+            />
+            <span class="field-error" data-error-for="password" role="alert" hidden></span>
+          </div>
+
+          <div class="field-row">
+            <label class="field-check" for="remember">
+              <input id="remember" name="remember" type="checkbox" />
+              Keep me signed in
+            </label>
+            <a href="settings.html">Forgot password?</a>
+          </div>
+
+          <button class="btn btn-primary auth-submit" type="submit">Log in</button>
+        </form>
+
+        <p class="auth-foot">
+          Already signed in on this device? Go to <a href="profile.html">your profile</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-note">Student Portal · Academic Section</p>
+      <nav aria-label="Footer">
+        <ul class="footer-list">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/nav.js"></script>
+  <script src="scripts/app.js"></script>
+  <script>
+    // Client-side validation only — there is no backend to post to yet.
+    (function () {
+      var form = Portal.$('#login-form');
+
+      var schema = {
+        email: ['required', 'email'],
+        password: ['required', ['minLength', 8]]
+      };
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var result = Portal.validateForm(form, schema);
+        if (!result.valid) return;
+
+        Portal.store.set('session', {
+          email: result.values.email,
+          remember: result.values.remember === true,
+          signedInAt: new Date().toISOString()
+        });
+
+        window.location.href = 'profile.html';
+      });
+    })();
+  </script>
+</body>
+</html>
