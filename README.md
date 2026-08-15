@@ -16,3 +16,14 @@ and vanilla JavaScript — no frameworks, no build step.# student-portal
 - HTML5 for structure
 - CSS3 for styling and responsive layout
 - Vanilla JavaScript for interactivity
+
+## Project Structure
+
+```
+student-portal/
+├── index.html
+├── styles/
+│   └── main.css
+└── scripts/
+    └── utils.js
+```
