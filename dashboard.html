@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Your Student Portal dashboard — courses, running grades and campus announcements." />
+  <title>Dashboard · Student Portal</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    /* Dashboard styling lives here for now: styles/main.css has no dashboard section yet. */
+    .dashboard {
+      padding-block: var(--space-8);
+    }
+
+    .dashboard-welcome {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-7);
+    }
+
+    .dashboard-welcome-title {
+      margin-bottom: var(--space-1);
+      font-size: var(--fs-2xl);
+    }
+
+    .dashboard-welcome-meta {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    .dashboard-section {
+      margin-bottom: var(--space-8);
+    }
+
+    .dashboard-section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+
+    .dashboard-section-title {
+      font-size: var(--fs-xl);
+      margin-bottom: var(--space-1);
+    }
+
+    .dashboard-section-lede {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    /* --- Courses --- */
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--space-5);
+    }
+
+    .course-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition),
+                  border-color var(--transition);
+    }
+
+    .course-card:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+      box-shadow: var(--shadow-md);
+    }
+
+    .course-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .course-code {
+      display: block;
+      margin-bottom: var(--space-1);
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .course-title {
+      margin: 0;
+      font-size: var(--fs-lg);
+    }
+
+    .course-grade {
+      flex-shrink: 0;
+      display: inline-block;
+      padding: var(--space-1) var(--space-3);
+      border-radius: 999px;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .course-grade.is-pending {
+      background: var(--color-surface-alt);
+      color: var(--color-text-muted);
+    }
+
+    .course-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      margin: 0;
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border);
+      font-size: var(--fs-sm);
+      color: var(--color-text-muted);
+    }
+
+    .course-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .course-meta-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .course-meta-value {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    /* --- Announcements --- */
+
+    .announcement-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .announcement-item {
+      display: grid;
+      grid-template-columns: 6.5rem 1fr;
+      gap: var(--space-5);
+      padding: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--color-primary);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .announcement-item.is-urgent {
+      border-left-color: var(--color-danger);
+    }
+
+    .announcement-date {
+      display: flex;
+      flex-direction: column;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      line-height: var(--lh-tight);
+    }
+
+    .announcement-date-day {
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .announcement-title {
+      margin: 0 0 var(--space-2);
+      font-size: var(--fs-lg);
+    }
+
+    .announcement-tag {
+      display: inline-block;
+      margin-bottom: var(--space-2);
+      padding: 2px var(--space-3);
+      border-radius: 999px;
+      background: var(--color-surface-alt);
+      color: var(--color-text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .announcement-item.is-urgent .announcement-tag {
+      background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+      color: var(--color-danger);
+    }
+
+    .announcement-text {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    @media (max-width: 560px) {
+      .announcement-item {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+      }
+
+      .announcement-date {
+        flex-direction: row;
+        align-items: baseline;
+        gap: var(--space-2);
+      }
+    }
+  </style>
+</head>
+<body data-page="dashboard">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">SP</span>
+        <span class="brand-text">Student Portal</span>
+      </a>
+
+      <!-- Shared navigation is rendered here by scripts/nav.js -->
+      <div id="app-nav"></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="dashboard container">
+      <header class="dashboard-welcome">
+        <div>
+          <h1 class="dashboard-welcome-title">Welcome back, Parth</h1>
+          <p class="dashboard-welcome-meta">B.Tech Computer Science &amp; Engineering · Semester Ⅰ, 2026–27</p>
+        </div>
+        <a class="btn btn-ghost" href="profile.html">View profile</a>
+      </header>
+
+      <section class="dashboard-section" aria-labelledby="courses-title">
+        <div class="dashboard-section-head">
+          <div>
+            <h2 class="dashboard-section-title" id="courses-title">Your courses</h2>
+            <p class="dashboard-section-lede">Registered for this semester, with running grade and credit weight.</p>
+          </div>
+        </div>
+
+        <div class="course-grid">
+          <article class="course-card">
+            <div class="course-card-head">
+              <div>
+                <span class="course-code">CS201</span>
+                <h3 class="course-title">Data Structures &amp; Algorithms</h3>
+              </div>
+              <span class="course-grade">A-</span>
+            </div>
+            <dl class="course-meta">
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Instructor</dt>
+                <dd class="course-meta-value">Dr. Ananya Rao</dd>
+              </div>
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Credits</dt>
+                <dd class="course-meta-value">4</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="course-card">
+            <div class="course-card-head">
+              <div>
+                <span class="course-code">CS210</span>
+                <h3 class="course-title">Operating Systems</h3>
+              </div>
+              <span class="course-grade">B+</span>
+            </div>
+            <dl class="course-meta">
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Instructor</dt>
+                <dd class="course-meta-value">Prof. Kiran Deshmukh</dd>
+              </div>
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Credits</dt>
+                <dd class="course-meta-value">4</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="course-card">
+            <div class="course-card-head">
+              <div>
+                <span class="course-code">CS215</span>
+                <h3 class="course-title">Software Systems Development</h3>
+              </div>
+              <span class="course-grade is-pending">In progress</span>
+            </div>
+            <dl class="course-meta">
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Instructor</dt>
+                <dd class="course-meta-value">Dr. Meera Nair</dd>
+              </div>
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Credits</dt>
+                <dd class="course-meta-value">3</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="course-card">
+            <div class="course-card-head">
+              <div>
+                <span class="course-code">MA204</span>
+                <h3 class="course-title">Discrete Mathematics</h3>
+              </div>
+              <span class="course-grade">A</span>
+            </div>
+            <dl class="course-meta">
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Instructor</dt>
+                <dd class="course-meta-value">Dr. Sameer Joshi</dd>
+              </div>
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Credits</dt>
+                <dd class="course-meta-value">3</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="course-card">
+            <div class="course-card-head">
+              <div>
+                <span class="course-code">CS220</span>
+                <h3 class="course-title">Digital Logic Design</h3>
+              </div>
+              <span class="course-grade">B</span>
+            </div>
+            <dl class="course-meta">
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Instructor</dt>
+                <dd class="course-meta-value">Prof. Leela Iyer</dd>
+              </div>
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Credits</dt>
+                <dd class="course-meta-value">3</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="course-card">
+            <div class="course-card-head">
+              <div>
+                <span class="course-code">HS101</span>
+                <h3 class="course-title">Professional Communication</h3>
+              </div>
+              <span class="course-grade">A</span>
+            </div>
+            <dl class="course-meta">
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Instructor</dt>
+                <dd class="course-meta-value">Ms. Farah Sheikh</dd>
+              </div>
+              <div class="course-meta-item">
+                <dt class="course-meta-label">Credits</dt>
+                <dd class="course-meta-value">2</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </section>
+
+      <section class="dashboard-section" aria-labelledby="announcements-title">
+        <div class="dashboard-section-head">
+          <div>
+            <h2 class="dashboard-section-title" id="announcements-title">Announcements</h2>
+            <p class="dashboard-section-lede">Posted by the Academic Section and your course instructors.</p>
+          </div>
+        </div>
+
+        <ul class="announcement-list">
+          <li>
+            <article class="announcement-item is-urgent">
+              <div class="announcement-date">
+                <span class="announcement-date-day">14</span>
+                <span>Aug 2026</span>
+              </div>
+              <div>
+                <span class="announcement-tag">Deadline</span>
+                <h3 class="announcement-title">SSD Assignment 1 due Friday, 11:59 PM</h3>
+                <p class="announcement-text">
+                  Submit through the course page, not by email. Late submissions lose 10% per
+                  day for up to two days, after which the assignment will not be accepted.
+                </p>
+              </div>
+            </article>
+          </li>
+
+          <li>
+            <article class="announcement-item">
+              <div class="announcement-date">
+                <span class="announcement-date-day">12</span>
+                <span>Aug 2026</span>
+              </div>
+              <div>
+                <span class="announcement-tag">Attendance</span>
+                <h3 class="announcement-title">Attendance shortage notices sent for two courses</h3>
+                <p class="announcement-text">
+                  If your attendance in Operating Systems or Digital Logic Design has dropped
+                  below 75%, check the notice emailed to your institute address and speak with
+                  your course instructor before the next internal exam.
+                </p>
+              </div>
+            </article>
+          </li>
+
+          <li>
+            <article class="announcement-item">
+              <div class="announcement-date">
+                <span class="announcement-date-day">08</span>
+                <span>Aug 2026</span>
+              </div>
+              <div>
+                <span class="announcement-tag">Campus</span>
+                <h3 class="announcement-title">Mid-semester exam schedule released</h3>
+                <p class="announcement-text">
+                  The Semester Ⅰ mid-semester timetable is up on the notice board and the
+                  Academic Section's site. Seating arrangements will follow one week before
+                  exams begin.
+                </p>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-note">Student Portal · Academic Section</p>
+      <nav aria-label="Footer">
+        <ul class="footer-list">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/nav.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
