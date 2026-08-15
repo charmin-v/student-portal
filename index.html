@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Student Portal — one place for your courses, attendance, grades and campus notices." />
+  <title>Student Portal</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">SP</span>
+        <span class="brand-text">Student Portal</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+      </button>
+
+      <nav id="primary-nav" class="nav" aria-label="Primary">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="login.html">Login</a></li>
+          <li><a class="nav-link" href="profile.html">Profile</a></li>
+          <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          <li><a class="nav-link" href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Semester Ⅰ · 2026–27</p>
+          <h1 class="hero-title">Everything about your semester, in one place.</h1>
+          <p class="hero-lede">
+            Check your timetable, track attendance before it becomes a problem, look up
+            internal marks the day they are published, and keep your registration details
+            current — without hunting through five different notice boards.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="login.html">Log in with your roll number</a>
+            <a class="btn btn-ghost" href="dashboard.html">Take a look around</a>
+          </div>
+          <p class="hero-note">
+            First time here? Use the password sent to your institute email and change it
+            from <a href="settings.html">Settings</a> right after you sign in.
+          </p>
+        </div>
+
+        <aside class="hero-card" aria-label="Today at a glance">
+          <h2 class="hero-card-title">Today at a glance</h2>
+          <ul class="glance-list">
+            <li class="glance-item">
+              <span class="glance-label">Next class</span>
+              <span class="glance-value">Operating Systems · 10:30 · H-201</span>
+            </li>
+            <li class="glance-item">
+              <span class="glance-label">Attendance</span>
+              <span class="glance-value">82% overall · 2 courses below 75%</span>
+            </li>
+            <li class="glance-item">
+              <span class="glance-label">Due this week</span>
+              <span class="glance-value">SSD Assignment 1 · Friday, 11:59 PM</span>
+            </li>
+          </ul>
+          <p class="glance-foot">Sample data — the live dashboard replaces this once you log in.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="container">
+        <h2 class="section-title">About the portal</h2>
+        <p class="section-lede">
+          The Student Portal is the front end to the academic records the institute already
+          keeps about you. It does not create new paperwork — it just makes the existing
+          records readable, current, and available on a phone at 9 in the morning.
+        </p>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3 class="feature-title">Courses &amp; timetable</h3>
+            <p class="feature-text">
+              Your registered courses for the running semester, with slot, venue, instructor
+              and credit count. The weekly grid highlights the class you are in right now.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <h3 class="feature-title">Attendance</h3>
+            <p class="feature-text">
+              Per-course percentages updated after each lecture, plus how many sessions you
+              can still miss before you drop under the 75% requirement.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <h3 class="feature-title">Grades &amp; transcripts</h3>
+            <p class="feature-text">
+              Quiz, mid-semester and end-semester marks as they are released, running SGPA
+              and CGPA, and a printable statement of grades for past semesters.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <h3 class="feature-title">Profile &amp; settings</h3>
+            <p class="feature-text">
+              Keep your contact number, hostel room and emergency contact accurate, manage
+              your password, and choose which notifications reach your email.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          <h3 class="callout-title">Who can sign in</h3>
+          <p class="callout-text">
+            Any currently enrolled student with an active institute account. Alumni keep
+            read-only access to transcripts for two years after graduation. Faculty and
+            staff use the separate administration console, not this portal.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-note">Student Portal · Academic Section</p>
+      <nav aria-label="Footer">
+        <ul class="footer-list">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script>
+    // Minimal wiring for the base skeleton: mobile nav toggle + current-page highlight.
+    (function () {
+      var toggle = Portal.$('.nav-toggle');
+      var nav = Portal.$('#primary-nav');
+
+      if (toggle && nav) {
+        toggle.addEventListener('click', function () {
+          var open = nav.classList.toggle('is-open');
+          toggle.setAttribute('aria-expanded', String(open));
+        });
+      }
+
+      var here = location.pathname.split('/').pop() || 'index.html';
+      Portal.$$('.nav-link').forEach(function (link) {
+        if (link.getAttribute('href') === here) {
+          link.classList.add('is-active');
+          link.setAttribute('aria-current', 'page');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
