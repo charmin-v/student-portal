@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Your Student Portal profile — contact details, enrollment and academic standing." />
+  <title>My profile · Student Portal</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    /* Profile styling lives here for now: styles/main.css has no profile section yet. */
+    .profile {
+      padding-block: var(--space-8);
+    }
+
+    .profile-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+
+    .profile-avatar {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: var(--color-text-inverse);
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .profile-heading-name {
+      margin-bottom: var(--space-1);
+      font-size: var(--fs-2xl);
+    }
+
+    .profile-heading-meta {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: var(--space-5);
+      align-items: start;
+    }
+
+    .profile-card {
+      padding: var(--space-6);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .profile-card-title {
+      font-size: var(--fs-lg);
+      margin-bottom: var(--space-5);
+    }
+
+    .profile-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-5);
+    }
+
+    .profile-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .profile-field-label {
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .profile-field-value {
+      font-size: var(--fs-base);
+      font-weight: 600;
+    }
+
+    .profile-field-value a {
+      font-weight: 600;
+    }
+
+    .profile-standing {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    .standing-card {
+      padding: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .standing-title {
+      font-size: var(--fs-base);
+      margin-bottom: var(--space-4);
+    }
+
+    .standing-stat {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-block: var(--space-2);
+      border-top: 1px solid var(--color-border);
+      font-size: var(--fs-sm);
+    }
+
+    .standing-stat:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .standing-stat-label {
+      color: var(--color-text-muted);
+    }
+
+    .standing-stat-value {
+      font-weight: 700;
+    }
+
+    .standing-gpa {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .standing-gpa-number {
+      font-size: var(--fs-3xl);
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 1;
+    }
+
+    .standing-gpa-scale {
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: var(--space-1) var(--space-3);
+      border-radius: 999px;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      font-size: var(--fs-sm);
+      font-weight: 700;
+    }
+
+    .profile-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+
+    @media (max-width: 800px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-page="profile">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">SP</span>
+        <span class="brand-text">Student Portal</span>
+      </a>
+
+      <!-- Shared navigation is rendered here by scripts/nav.js -->
+      <div id="app-nav"></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="profile container">
+      <div class="profile-header">
+        <div class="profile-avatar" aria-hidden="true">PV</div>
+        <div>
+          <h1 class="profile-heading-name">Charmin Parmar</h1>
+          <p class="profile-heading-meta">M.Tech · Computer Science &amp; Information Security · Semester Ⅰ, 2026–27</p>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+        <article class="profile-card" aria-labelledby="profile-details-title">
+          <h2 class="profile-card-title" id="profile-details-title">Profile details</h2>
+
+          <dl class="profile-fields">
+            <div class="profile-field">
+              <dt class="profile-field-label">Full name</dt>
+              <dd class="profile-field-value" id="profile-name">Parth Vekariya</dd>
+            </div>
+
+            <div class="profile-field">
+              <dt class="profile-field-label">Institute email</dt>
+              <dd class="profile-field-value"><a id="profile-email" href="mailto:parth.vekariya@students.iiit.ac.in">parth.vekariya@students.iiit.ac.in</a></dd>
+            </div>
+
+            <div class="profile-field">
+              <dt class="profile-field-label">Student ID</dt>
+              <dd class="profile-field-value" id="profile-student-id">2026CSB1042</dd>
+            </div>
+
+            <div class="profile-field">
+              <dt class="profile-field-label">Course enrolled</dt>
+              <dd class="profile-field-value" id="profile-course">B.Tech in Computer Science &amp; Engineering</dd>
+            </div>
+
+            <div class="profile-field">
+              <dt class="profile-field-label">Batch</dt>
+              <dd class="profile-field-value">2026 &ndash; 2030</dd>
+            </div>
+
+            <div class="profile-field">
+              <dt class="profile-field-label">Hostel / room</dt>
+              <dd class="profile-field-value">Kadamb Hostel, B-214</dd>
+            </div>
+
+            <div class="profile-field">
+              <dt class="profile-field-label">Phone</dt>
+              <dd class="profile-field-value">+91 98765 43210</dd>
+            </div>
+
+            <div class="profile-field">
+              <dt class="profile-field-label">Advisor</dt>
+              <dd class="profile-field-value">Dr. Ananya Rao</dd>
+            </div>
+          </dl>
+
+          <div class="profile-actions">
+            <a class="btn btn-primary" href="settings.html">Edit profile</a>
+            <a class="btn btn-ghost" href="dashboard.html">Go to dashboard</a>
+          </div>
+        </article>
+
+        <div class="profile-standing">
+          <article class="standing-card" aria-labelledby="profile-gpa-title">
+            <h2 class="standing-title" id="profile-gpa-title">Academic standing</h2>
+            <div class="standing-gpa">
+              <span class="standing-gpa-number" id="profile-gpa">8.72</span>
+              <span class="standing-gpa-scale">CGPA / 10</span>
+            </div>
+            <div class="standing-stat">
+              <span class="standing-stat-label">Current semester SGPA</span>
+              <span class="standing-stat-value">8.9</span>
+            </div>
+            <div class="standing-stat">
+              <span class="standing-stat-label">Credits completed</span>
+              <span class="standing-stat-value">42 / 160</span>
+            </div>
+            <div class="standing-stat">
+              <span class="standing-stat-label">Standing</span>
+              <span class="badge">Good standing</span>
+            </div>
+          </article>
+
+          <article class="standing-card" aria-labelledby="profile-enrollment-title">
+            <h2 class="standing-title" id="profile-enrollment-title">Enrollment status</h2>
+            <div class="standing-stat">
+              <span class="standing-stat-label">Status</span>
+              <span class="standing-stat-value">Active</span>
+            </div>
+            <div class="standing-stat">
+              <span class="standing-stat-label">Overall attendance</span>
+              <span class="standing-stat-value">82%</span>
+            </div>
+            <div class="standing-stat">
+              <span class="standing-stat-label">Fees</span>
+              <span class="standing-stat-value">Paid for semester</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-note">Student Portal · Academic Section</p>
+      <nav aria-label="Footer">
+        <ul class="footer-list">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/nav.js"></script>
+  <script src="scripts/app.js"></script>
+  <script src="scripts/profile.js"></script>
+</body>
+</html>
