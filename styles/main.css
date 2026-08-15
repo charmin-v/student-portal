@@ -787,3 +787,134 @@ img {
     gap: var(--space-3);
   }
 }
+/* 11. Profile page --------------------------------------------------------
+   Complements the inline <style> block on profile.html: general polish for
+   the avatar, the view/edit field states profile.js switches between, and
+   the Edit/Save/Cancel toolbar it injects. */
+
+/* --- Centered card variant ---
+   Apply `profile-card--center` alongside `profile-card` for a classic
+   centered layout (avatar stacked above the name) instead of the default
+   side-by-side header. */
+.profile-card--center {
+  max-width: 30rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.profile-card--center .profile-header,
+.profile-card--center .profile-avatar {
+  margin-inline: auto;
+}
+
+.profile-card--center .profile-header {
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-card--center .profile-fields {
+  text-align: left;
+}
+
+/* --- Avatar --- */
+
+.profile-avatar {
+  position: relative;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+/* Fallback silhouette for an avatar with no initials set — a simple
+   head-and-shoulders shape built from two circles, no image required. */
+.profile-avatar.is-placeholder {
+  background: var(--color-surface-alt);
+  color: transparent;
+}
+
+.profile-avatar.is-placeholder::before,
+.profile-avatar.is-placeholder::after {
+  content: '';
+  position: absolute;
+  background: var(--color-border);
+}
+
+.profile-avatar.is-placeholder::before {
+  top: 22%;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+}
+
+.profile-avatar.is-placeholder::after {
+  bottom: -18%;
+  width: 68%;
+  height: 46%;
+  border-radius: 50% 50% 0 0;
+}
+
+/* --- View-mode field values --- */
+
+.profile-field-value {
+  position: relative;
+  transition: color var(--transition);
+}
+
+/* --- Edit-mode inputs ---
+   profile.js gives each editing <input> the shared .field-input class and
+   inserts it right after the (now-hidden) display element, so this is
+   what "edit mode" actually looks like on screen. */
+.profile-field .field-input {
+  animation: profile-field-in 220ms ease;
+}
+
+@keyframes profile-field-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Edit toolbar --- */
+
+#profile-edit-toolbar {
+  transition: opacity var(--transition);
+}
+
+#profile-edit-toggle,
+#profile-cancel-btn,
+#profile-save-btn {
+  transition: transform var(--transition), background-color var(--transition),
+              border-color var(--transition), box-shadow var(--transition),
+              opacity var(--transition);
+}
+
+/* Save gets its own accent so it reads as the primary action even though
+   it reuses .btn-primary as a base. */
+#profile-save-btn {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+#profile-save-btn:hover {
+  background: color-mix(in srgb, var(--color-success) 85%, black);
+  border-color: color-mix(in srgb, var(--color-success) 85%, black);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+#profile-save-btn:active {
+  transform: translateY(0);
+}
+
+#profile-cancel-btn:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
