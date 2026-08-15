@@ -8,7 +8,8 @@
    6. Hero
    7. Sections, cards, callout
    8. Footer
-   9. Responsive
+   9. Forms & auth
+  10. Responsive
    ========================================================================== */
 
 /* 1. Design tokens ------------------------------------------------------- */
@@ -336,6 +337,27 @@ img {
   color: var(--color-primary);
 }
 
+/* Form submit buttons spend time disabled while a request is in flight. */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover,
+.btn[aria-disabled="true"]:hover {
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn:hover {
+    transform: none;
+    transition: background-color var(--transition), border-color var(--transition);
+  }
+}
+
 /* 6. Hero ----------------------------------------------------------------- */
 
 .hero {
@@ -511,7 +533,192 @@ img {
   font-size: var(--fs-sm);
 }
 
-/* 9. Responsive ----------------------------------------------------------- */
+/* 9. Forms & auth ---------------------------------------------------------- */
+
+/* Centring wrapper for single-card pages (login, password reset).
+   The header and footer are subtracted so the card sits optically centred
+   in what is left of the viewport rather than in the whole page. */
+.auth {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - var(--header-height) - 90px);
+  padding: var(--space-7) var(--space-5);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.auth-title {
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-2xl);
+}
+
+.auth-lede {
+  margin-bottom: var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.auth-submit {
+  width: 100%;
+}
+
+.auth-foot {
+  margin: var(--space-5) 0 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+/* --- Fields --- */
+
+.field {
+  margin-bottom: var(--space-5);
+}
+
+.field-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.field-input,
+.field-select,
+.field-textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.field-textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.field-input::placeholder,
+.field-textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.75;
+}
+
+/* The ring replaces the global :focus-visible outline on inputs, which would
+   otherwise sit outside the rounded border and look detached. */
+.field-input:focus,
+.field-select:focus,
+.field-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.field-input:disabled,
+.field-select:disabled,
+.field-textarea:disabled {
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Set by scripts/auth.js when a check fails. */
+.field-input.is-invalid,
+.field-select.is-invalid,
+.field-textarea.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.field-input.is-invalid:focus,
+.field-select.is-invalid:focus,
+.field-textarea.is-invalid:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 22%, transparent);
+}
+
+/* --- Messages --- */
+
+/* Rendered into [data-error-for="<field>"]; scripts toggle `hidden`, so the
+   display value here only applies while a message is present. */
+.field-error {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--color-danger);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.field-error[hidden] {
+  display: none;
+}
+
+.field-hint {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.form-message {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left-width: 3px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+}
+
+.form-message-error {
+  border-left-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+  color: var(--color-danger);
+}
+
+.form-message-success {
+  border-left-color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 8%, var(--color-surface));
+  color: var(--color-success);
+}
+
+/* --- Inline row (remember me / forgot password) --- */
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  font-size: var(--fs-sm);
+}
+
+.field-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.field-check input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* 10. Responsive ---------------------------------------------------------- */
 
 @media (max-width: 900px) {
   .hero-inner {
@@ -563,5 +770,20 @@ img {
 
   .hero-actions .btn {
     flex: 1 1 100%;
+  }
+
+  .auth {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .auth-card {
+    padding: var(--space-5);
+  }
+
+  /* Stack "keep me signed in" above the reset link on narrow screens. */
+  .field-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
   }
 }
