@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Manage your Student Portal appearance, notification and password settings." />
+  <title>Account settings · Student Portal</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    /* Settings styling lives here for now: styles/main.css has no settings section yet. */
+    .settings {
+      padding-block: var(--space-8);
+    }
+
+    .settings-header {
+      max-width: 62ch;
+      margin-bottom: var(--space-7);
+    }
+
+    .settings-title {
+      margin-bottom: var(--space-2);
+      font-size: var(--fs-2xl);
+    }
+
+    .settings-lede {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    .settings-groups {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .settings-card {
+      padding: var(--space-6);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .settings-card-head {
+      margin-bottom: var(--space-5);
+    }
+
+    .settings-card-title {
+      margin: 0 0 var(--space-1);
+      font-size: var(--fs-lg);
+    }
+
+    .settings-card-lede {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    fieldset.settings-fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    /* --- Theme preference --- */
+
+    .theme-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .theme-option {
+      position: relative;
+    }
+
+    .theme-option-input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    .theme-option-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition),
+                  background-color var(--transition);
+    }
+
+    .theme-option-input:checked + .theme-option-card {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+      box-shadow: 0 0 0 1px var(--color-primary);
+    }
+
+    .theme-option-input:focus-visible + .theme-option-card {
+      outline: 3px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .theme-option-swatch {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    .theme-option-swatch.is-light {
+      background: linear-gradient(135deg, #ffffff 50%, #eef1f8 50%);
+    }
+
+    .theme-option-swatch.is-dark {
+      background: linear-gradient(135deg, #161a26 50%, #0f121b 50%);
+    }
+
+    .theme-option-swatch.is-system {
+      background: linear-gradient(135deg, #ffffff 50%, #161a26 50%);
+    }
+
+    .theme-option-name {
+      display: block;
+      font-weight: 700;
+    }
+
+    .theme-option-desc {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    /* --- Notification preferences --- */
+
+    .notification-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .notification-option {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-2);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .notification-option:first-child {
+      border-top: 0;
+    }
+
+    .notification-checkbox {
+      flex-shrink: 0;
+      width: 1.1rem;
+      height: 1.1rem;
+      margin-top: 0.2rem;
+      accent-color: var(--color-primary);
+      cursor: pointer;
+    }
+
+    .notification-copy {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .notification-label {
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .notification-desc {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    /* --- Password form --- */
+
+    .password-form .field:last-of-type {
+      margin-bottom: var(--space-2);
+    }
+
+    .password-hint {
+      margin: 0 0 var(--space-5);
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    .settings-card-foot {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: var(--space-5);
+    }
+
+    @media (max-width: 560px) {
+      .settings-card-foot {
+        justify-content: stretch;
+      }
+
+      .settings-card-foot .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body data-page="settings">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">SP</span>
+        <span class="brand-text">Student Portal</span>
+      </a>
+
+      <!-- Shared navigation is rendered here by scripts/nav.js -->
+      <div id="app-nav"></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="settings container">
+      <header class="settings-header">
+        <h1 class="settings-title">Account settings</h1>
+        <p class="settings-lede">
+          Control how the portal looks, which notifications reach you, and the password you
+          sign in with.
+        </p>
+      </header>
+
+      <div class="settings-groups">
+        <article class="settings-card" aria-labelledby="theme-title">
+          <div class="settings-card-head">
+            <h2 class="settings-card-title" id="theme-title">Appearance</h2>
+            <p class="settings-card-lede">Choose how the portal looks on this device.</p>
+          </div>
+
+          <fieldset class="settings-fieldset">
+            <legend class="sr-only">Theme preference</legend>
+            <div class="theme-options">
+              <div class="theme-option">
+                <input
+                  class="theme-option-input"
+                  type="radio"
+                  id="theme-light"
+                  name="theme"
+                  value="light"
+                />
+                <label class="theme-option-card" for="theme-light">
+                  <span class="theme-option-swatch is-light" aria-hidden="true"></span>
+                  <span>
+                    <span class="theme-option-name">Light</span>
+                    <span class="theme-option-desc">Bright background, dark text</span>
+                  </span>
+                </label>
+              </div>
+
+              <div class="theme-option">
+                <input
+                  class="theme-option-input"
+                  type="radio"
+                  id="theme-dark"
+                  name="theme"
+                  value="dark"
+                  checked
+                />
+                <label class="theme-option-card" for="theme-dark">
+                  <span class="theme-option-swatch is-dark" aria-hidden="true"></span>
+                  <span>
+                    <span class="theme-option-name">Dark</span>
+                    <span class="theme-option-desc">Dimmed background, easier at night</span>
+                  </span>
+                </label>
+              </div>
+
+              <div class="theme-option">
+                <input
+                  class="theme-option-input"
+                  type="radio"
+                  id="theme-system"
+                  name="theme"
+                  value="system"
+                />
+                <label class="theme-option-card" for="theme-system">
+                  <span class="theme-option-swatch is-system" aria-hidden="true"></span>
+                  <span>
+                    <span class="theme-option-name">System</span>
+                    <span class="theme-option-desc">Match your device setting</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </article>
+
+        <article class="settings-card" aria-labelledby="notifications-title">
+          <div class="settings-card-head">
+            <h2 class="settings-card-title" id="notifications-title">Notifications</h2>
+            <p class="settings-card-lede">Choose how the Academic Section can reach you.</p>
+          </div>
+
+          <fieldset class="settings-fieldset">
+            <legend class="sr-only">Notification channels</legend>
+            <div class="notification-list">
+              <div class="notification-option">
+                <input
+                  class="notification-checkbox"
+                  type="checkbox"
+                  id="notify-email"
+                  name="notifications"
+                  value="email"
+                  checked
+                />
+                <div class="notification-copy">
+                  <label class="notification-label" for="notify-email">Email</label>
+                  <p class="notification-desc">
+                    Grades, attendance warnings and announcements sent to your institute
+                    email address.
+                  </p>
+                </div>
+              </div>
+
+              <div class="notification-option">
+                <input
+                  class="notification-checkbox"
+                  type="checkbox"
+                  id="notify-sms"
+                  name="notifications"
+                  value="sms"
+                />
+                <div class="notification-copy">
+                  <label class="notification-label" for="notify-sms">SMS</label>
+                  <p class="notification-desc">
+                    Text messages for urgent notices only, such as exam reschedules or
+                    campus closures.
+                  </p>
+                </div>
+              </div>
+
+              <div class="notification-option">
+                <input
+                  class="notification-checkbox"
+                  type="checkbox"
+                  id="notify-push"
+                  name="notifications"
+                  value="push"
+                  checked
+                />
+                <div class="notification-copy">
+                  <label class="notification-label" for="notify-push">Push notifications</label>
+                  <p class="notification-desc">
+                    Alerts on this device when a new grade, notice or assignment deadline is
+                    posted.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="settings-card-foot">
+            <button class="btn btn-primary" type="button">Save preferences</button>
+          </div>
+        </article>
+
+        <article class="settings-card" aria-labelledby="password-title">
+          <div class="settings-card-head">
+            <h2 class="settings-card-title" id="password-title">Change password</h2>
+            <p class="settings-card-lede">
+              You'll need your current password to set a new one.
+            </p>
+          </div>
+
+          <form class="password-form" id="password-form" novalidate>
+            <div class="field">
+              <label class="field-label" for="current-password">Current password</label>
+              <input
+                class="field-input"
+                id="current-password"
+                name="currentPassword"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+              <span class="field-error" data-error-for="currentPassword" role="alert" hidden></span>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="new-password">New password</label>
+              <input
+                class="field-input"
+                id="new-password"
+                name="newPassword"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+              />
+              <span class="field-hint">At least 8 characters.</span>
+              <span class="field-error" data-error-for="newPassword" role="alert" hidden></span>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="confirm-password">Confirm new password</label>
+              <input
+                class="field-input"
+                id="confirm-password"
+                name="confirmPassword"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+              />
+              <span class="field-error" data-error-for="confirmPassword" role="alert" hidden></span>
+            </div>
+
+            <p class="password-hint">
+              Changing your password will sign you out of the portal on every other device.
+            </p>
+
+            <div class="settings-card-foot">
+              <button class="btn btn-primary" type="submit">Update password</button>
+            </div>
+          </form>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-note">Student Portal · Academic Section</p>
+      <nav aria-label="Footer">
+        <ul class="footer-list">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/nav.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
