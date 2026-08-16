@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "type": "success",
+    "title": "Grade Posted",
+    "message": "Your grade for CS301 - Database Systems Midterm has been posted. You scored 88/100.",
+    "timestamp": "2026-08-14T09:32:00Z",
+    "read": false
+  },
+  {
+    "id": 2,
+    "type": "warning",
+    "title": "Assignment Due Soon",
+    "message": "Assignment 4 for CS205 - Operating Systems is due tomorrow at 11:59 PM.",
+    "timestamp": "2026-08-15T14:10:00Z",
+    "read": false
+  },
+  {
+    "id": 3,
+    "type": "info",
+    "title": "New Announcement",
+    "message": "The instructor for CS410 - Computer Networks posted a new announcement regarding the rescheduled lab session.",
+    "timestamp": "2026-08-13T18:45:00Z",
+    "read": true
+  },
+  {
+    "id": 4,
+    "type": "warning",
+    "title": "Fee Payment Reminder",
+    "message": "Your semester fee payment is due in 5 days. Please clear dues to avoid a late fee.",
+    "timestamp": "2026-08-12T08:00:00Z",
+    "read": false
+  },
+  {
+    "id": 5,
+    "type": "success",
+    "title": "Registration Confirmed",
+    "message": "You have been successfully registered for CS520 - Advanced Cryptography for the upcoming semester.",
+    "timestamp": "2026-08-10T11:20:00Z",
+    "read": true
+  },
+  {
+    "id": 6,
+    "type": "info",
+    "title": "Library Book Due",
+    "message": "Your borrowed book 'Introduction to Algorithms' is due for return on August 20.",
+    "timestamp": "2026-08-16T07:15:00Z",
+    "read": false
+  }
+]

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="All your Student Portal notifications — grades, attendance, deadlines and campus notices." />
+  <title>Notifications · Student Portal</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    /* Notifications styling lives here for now: styles/main.css has no notifications section yet. */
+    .notifications {
+      padding-block: var(--space-8);
+    }
+
+    .notifications-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .notifications-title {
+      margin-bottom: var(--space-1);
+      font-size: var(--fs-2xl);
+    }
+
+    .notifications-lede {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    .notifications-count {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      border-radius: 999px;
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .notification-feed {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .notification-item {
+      display: grid;
+      grid-template-columns: auto 6.5rem 1fr;
+      align-items: start;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .notification-item.is-unread {
+      border-left: 4px solid var(--color-primary);
+    }
+
+    .notification-unread-dot {
+      width: 10px;
+      height: 10px;
+      margin-top: 0.4rem;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+
+    .notification-item:not(.is-unread) .notification-unread-dot {
+      visibility: hidden;
+    }
+
+    .notification-date {
+      display: flex;
+      flex-direction: column;
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      line-height: var(--lh-tight);
+    }
+
+    .notification-date-day {
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .notification-body-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+
+    .notification-title {
+      margin: 0;
+      font-size: var(--fs-lg);
+    }
+
+    .notification-item:not(.is-unread) .notification-title {
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .notification-category {
+      display: inline-block;
+      padding: 2px var(--space-3);
+      border-radius: 999px;
+      background: var(--color-surface-alt);
+      color: var(--color-text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .notification-category.is-grade {
+      background: color-mix(in srgb, var(--color-success) 14%, var(--color-surface));
+      color: var(--color-success);
+    }
+
+    .notification-category.is-attendance {
+      background: color-mix(in srgb, var(--color-warning) 16%, var(--color-surface));
+      color: var(--color-warning);
+    }
+
+    .notification-category.is-deadline {
+      background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+      color: var(--color-danger);
+    }
+
+    .notification-category.is-fees {
+      background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+      color: var(--color-primary);
+    }
+
+    .notification-text {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    .notification-source {
+      display: block;
+      margin-top: var(--space-2);
+      color: var(--color-text-muted);
+      font-size: var(--fs-sm);
+    }
+
+    @media (max-width: 640px) {
+      .notification-item {
+        grid-template-columns: auto 1fr;
+      }
+
+      .notification-date {
+        flex-direction: row;
+        align-items: baseline;
+        gap: var(--space-2);
+      }
+    }
+  </style>
+</head>
+<body data-page="notifications">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">SP</span>
+        <span class="brand-text">Student Portal</span>
+      </a>
+
+      <!-- Shared navigation is rendered here by scripts/nav.js -->
+      <div id="app-nav"></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="notifications container">
+      <header class="notifications-header">
+        <div>
+          <h1 class="notifications-title">Notifications</h1>
+          <p class="notifications-lede">Grades, attendance, deadlines and campus notices, newest first.</p>
+        </div>
+        <span class="notifications-count">3 unread</span>
+      </header>
+
+      <ul class="notification-feed">
+        <li>
+          <article class="notification-item is-unread" aria-labelledby="notif-title-1">
+            <span class="notification-unread-dot" aria-hidden="true"></span>
+            <div class="notification-date">
+              <span class="notification-date-day">14</span>
+              <span>Aug</span>
+            </div>
+            <div>
+              <div class="notification-body-head">
+                <h2 class="notification-title" id="notif-title-1">SSD Assignment 1 due Friday, 11:59 PM</h2>
+                <span class="notification-category is-deadline">Deadline</span>
+              </div>
+              <p class="notification-text">
+                Submit through the course page, not by email. Late submissions lose 10% per
+                day for up to two days, after which the assignment will not be accepted.
+              </p>
+              <span class="notification-source">Software Systems Development · Dr. Meera Nair</span>
+            </div>
+          </article>
+        </li>
+
+        <li>
+          <article class="notification-item is-unread" aria-labelledby="notif-title-2">
+            <span class="notification-unread-dot" aria-hidden="true"></span>
+            <div class="notification-date">
+              <span class="notification-date-day">13</span>
+              <span>Aug</span>
+            </div>
+            <div>
+              <div class="notification-body-head">
+                <h2 class="notification-title" id="notif-title-2">Discrete Mathematics quiz grade posted</h2>
+                <span class="notification-category is-grade">Grade</span>
+              </div>
+              <p class="notification-text">
+                Your Quiz 2 score is now available on the course page, along with the
+                answer key and average class score.
+              </p>
+              <span class="notification-source">Discrete Mathematics · Dr. Sameer Joshi</span>
+            </div>
+          </article>
+        </li>
+
+        <li>
+          <article class="notification-item is-unread" aria-labelledby="notif-title-3">
+            <span class="notification-unread-dot" aria-hidden="true"></span>
+            <div class="notification-date">
+              <span class="notification-date-day">12</span>
+              <span>Aug</span>
+            </div>
+            <div>
+              <div class="notification-body-head">
+                <h2 class="notification-title" id="notif-title-3">Attendance shortage notices sent for two courses</h2>
+                <span class="notification-category is-attendance">Attendance</span>
+              </div>
+              <p class="notification-text">
+                Attendance in Operating Systems and Digital Logic Design has dropped below
+                75%. Speak with your course instructor before the next internal exam.
+              </p>
+              <span class="notification-source">Academic Section</span>
+            </div>
+          </article>
+        </li>
+
+        <li>
+          <article class="notification-item" aria-labelledby="notif-title-4">
+            <span class="notification-unread-dot" aria-hidden="true"></span>
+            <div class="notification-date">
+              <span class="notification-date-day">10</span>
+              <span>Aug</span>
+            </div>
+            <div>
+              <div class="notification-body-head">
+                <h2 class="notification-title" id="notif-title-4">Semester fee payment confirmed</h2>
+                <span class="notification-category is-fees">Fees</span>
+              </div>
+              <p class="notification-text">
+                Your Semester Ⅰ tuition and hostel fee payment of ₹1,42,500 has been received
+                and reconciled against your account. A receipt has been emailed to you.
+              </p>
+              <span class="notification-source">Accounts Office</span>
+            </div>
+          </article>
+        </li>
+
+        <li>
+          <article class="notification-item" aria-labelledby="notif-title-5">
+            <span class="notification-unread-dot" aria-hidden="true"></span>
+            <div class="notification-date">
+              <span class="notification-date-day">08</span>
+              <span>Aug</span>
+            </div>
+            <div>
+              <div class="notification-body-head">
+                <h2 class="notification-title" id="notif-title-5">Mid-semester exam schedule released</h2>
+                <span class="notification-category">Campus</span>
+              </div>
+              <p class="notification-text">
+                The Semester Ⅰ mid-semester timetable is up on the notice board and the
+                Academic Section's site. Seating arrangements follow one week before exams.
+              </p>
+              <span class="notification-source">Academic Section</span>
+            </div>
+          </article>
+        </li>
+
+        <li>
+          <article class="notification-item" aria-labelledby="notif-title-6">
+            <span class="notification-unread-dot" aria-hidden="true"></span>
+            <div class="notification-date">
+              <span class="notification-date-day">05</span>
+              <span>Aug</span>
+            </div>
+            <div>
+              <div class="notification-body-head">
+                <h2 class="notification-title" id="notif-title-6">Library books due in 3 days</h2>
+                <span class="notification-category">Library</span>
+              </div>
+              <p class="notification-text">
+                "Operating System Concepts" and "Introduction to Algorithms" are due back
+                at the Central Library on 8 Aug. Renew online to avoid a late fee.
+              </p>
+              <span class="notification-source">Central Library</span>
+            </div>
+          </article>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-note">Student Portal · Academic Section</p>
+      <nav aria-label="Footer">
+        <ul class="footer-list">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/nav.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>

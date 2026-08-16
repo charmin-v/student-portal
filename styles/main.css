@@ -1644,3 +1644,66 @@ fieldset.settings-fieldset {
     width: 100%;
   }
 } 
+
+/* 14. Notifications page ---------------------------------------------------
+   Complements the inline <style> block on notifications.html: adds the
+   pulse animation for the unread dot, a hover state on notification items
+   (matching the .feature-card / .course-card / .announcement-item
+   pattern used elsewhere), and tighter spacing on small screens. */
+
+.notification-item {
+  transition: transform var(--transition), box-shadow var(--transition),
+              border-color var(--transition);
+}
+
+.notification-item:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+  box-shadow: var(--shadow-md);
+}
+
+/* Only unread items pulse — read items stay static so the animation itself
+   reads as a status signal, not decoration. */
+.notification-item.is-unread .notification-unread-dot {
+  animation: notification-dot-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes notification-dot-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-primary) 0%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification-item.is-unread .notification-unread-dot {
+    animation: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .notifications-header {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .notifications {
+    padding-block: var(--space-7);
+  }
+
+  .notification-item {
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .notification-item:hover {
+    transform: none;
+  }
+
+  .notification-body-head {
+    gap: var(--space-2);
+  }
+}
