@@ -166,19 +166,123 @@
     }
   }
 
+  /* --- Notification preferences ---------------------------------------
+   * Syncs and wires a `name="notifications"` checkbox group if the page
+   * has one (see settings.html's Notifications section: #notify-email /
+   * #notify-sms / #notify-push). Safe to skip on pages that don't have
+   * it. */
+
+  var NOTIFICATIONS_STORAGE_KEY = 'notifications';
+
+  // Matches the checked/unchecked state already baked into settings.html's
+  // markup, so a page with no saved preferences yet still shows the same
+  // checkboxes it would if this script weren't running at all.
+  var DEFAULT_NOTIFICATION_PREFS = {
+    email: true,
+    sms: false,
+    push: true
+  };
+
+  /**
+   * Saved notification preferences, overlaid onto the defaults so a
+   * partially-saved or older record still yields a value for every
+   * channel.
+   * @returns {Object<string, boolean>}
+   */
+  function loadNotificationPrefs() {
+    var stored = null;
+
+    if (utils.store) {
+      stored = utils.store.get(NOTIFICATIONS_STORAGE_KEY, null);
+    } else {
+      try {
+        stored = JSON.parse(global.localStorage.getItem('sp:' + NOTIFICATIONS_STORAGE_KEY));
+      } catch (err) {
+        stored = null;
+      }
+    }
+
+    var prefs = {};
+    Object.keys(DEFAULT_NOTIFICATION_PREFS).forEach(function (key) {
+      prefs[key] = DEFAULT_NOTIFICATION_PREFS[key];
+    });
+
+    if (stored && typeof stored === 'object') {
+      Object.keys(prefs).forEach(function (key) {
+        if (Object.prototype.hasOwnProperty.call(stored, key)) {
+          prefs[key] = Boolean(stored[key]);
+        }
+      });
+    }
+
+    return prefs;
+  }
+
+  /**
+   * Persist notification preferences.
+   * @param {Object<string, boolean>} prefs
+   * @returns {boolean} false when storage was unavailable
+   */
+  function saveNotificationPrefs(prefs) {
+    if (utils.store) return utils.store.set(NOTIFICATIONS_STORAGE_KEY, prefs) !== false;
+
+    try {
+      global.localStorage.setItem('sp:' + NOTIFICATIONS_STORAGE_KEY, JSON.stringify(prefs));
+      return true;
+    } catch (err) {
+      console.warn('[Portal] settings.js: could not persist notification preferences — storage is unavailable.');
+      return false;
+    }
+  }
+
+  /**
+   * Set each checkbox's checked state from saved prefs, and wire every
+   * checkbox so any change re-reads the whole group and saves it as one
+   * record (rather than one storage write per checkbox).
+   * @returns {boolean} true when a notifications checkbox group was found
+   */
+  function initNotificationToggles() {
+    var checkboxes = document.querySelectorAll('input[name="notifications"]');
+    if (!checkboxes.length) return false;
+
+    var prefs = loadNotificationPrefs();
+
+    checkboxes.forEach(function (checkbox) {
+      if (Object.prototype.hasOwnProperty.call(prefs, checkbox.value)) {
+        checkbox.checked = prefs[checkbox.value];
+      }
+    });
+
+    function persistCurrentState() {
+      var current = {};
+      checkboxes.forEach(function (checkbox) {
+        current[checkbox.value] = checkbox.checked;
+      });
+      saveNotificationPrefs(current);
+    }
+
+    checkboxes.forEach(function (checkbox) {
+      checkbox.addEventListener('change', persistCurrentState);
+    });
+
+    return true;
+  }
+
   function init() {
     var theme = loadTheme();
     var isDark = applyTheme(theme);
     var toggleWired = initToggle();
     watchSystemPreference();
+    var notificationsWired = initNotificationToggles();
 
     console.log(
       '[Portal] theme ready — choice: ' + theme +
       ', active: ' + (isDark ? 'dark' : 'light') +
-      ', toggle: ' + (toggleWired ? 'wired' : 'skipped')
+      ', toggle: ' + (toggleWired ? 'wired' : 'skipped') +
+      ', notifications: ' + (notificationsWired ? 'wired' : 'skipped')
     );
 
-    return { theme: theme, isDark: isDark, toggleWired: toggleWired };
+    return { theme: theme, isDark: isDark, toggleWired: toggleWired, notificationsWired: notificationsWired };
   }
 
   ready(init);
@@ -191,6 +295,11 @@
     saveTheme: saveTheme,
     applyTheme: applyTheme,
     initToggle: initToggle,
+    notificationsStorageKey: NOTIFICATIONS_STORAGE_KEY,
+    defaultNotificationPrefs: DEFAULT_NOTIFICATION_PREFS,
+    loadNotificationPrefs: loadNotificationPrefs,
+    saveNotificationPrefs: saveNotificationPrefs,
+    initNotificationToggles: initNotificationToggles,
     init: init
   };
 })(window);
