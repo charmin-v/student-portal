@@ -10,6 +10,8 @@
    8. Footer
    9. Forms & auth
   10. Responsive
+  11. Profile page
+  12. Dashboard page
    ========================================================================== */
 
 /* 1. Design tokens ------------------------------------------------------- */
@@ -787,6 +789,7 @@ img {
     gap: var(--space-3);
   }
 }
+
 /* 11. Profile page --------------------------------------------------------
    Complements the inline <style> block on profile.html: general polish for
    the avatar, the view/edit field states profile.js switches between, and
@@ -917,4 +920,348 @@ img {
 #profile-cancel-btn:hover {
   border-color: var(--color-danger);
   color: var(--color-danger);
+}
+
+/* 12. Dashboard page -------------------------------------------------------
+   Centralizes the styling that dashboard.html currently duplicates in its
+   own inline <style> block, plus the pieces dashboard.js expects that
+   weren't styled anywhere yet: progress bars and the GPA badge. Rules here
+   share selectors with that inline block; the cascade order means the
+   page's own <style> (which loads after this file) still wins wherever
+   both define a rule, so this is safe to include without any visual
+   change until that inline block is trimmed down. */
+
+.dashboard {
+  padding-block: var(--space-8);
+}
+
+.dashboard-welcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+}
+
+.dashboard-welcome-title {
+  margin-bottom: var(--space-1);
+  font-size: var(--fs-2xl);
+}
+
+.dashboard-welcome-meta {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.dashboard-section {
+  margin-bottom: var(--space-8);
+}
+
+.dashboard-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.dashboard-section-title {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-1);
+}
+
+.dashboard-section-lede {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* --- GPA badge ---
+   Populated by dashboard.js into #dashboard-gpa: a label span and a
+   number span, laid out as a single pill between the welcome text and the
+   "View profile" link. */
+.dashboard-gpa {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-primary-light);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-gpa:empty {
+  display: none;
+}
+
+.dashboard-gpa-label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dashboard-gpa-value {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  line-height: 1;
+}
+
+/* --- Course grid & cards --- */
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-5);
+}
+
+.course-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition),
+              border-color var(--transition);
+}
+
+.course-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+  box-shadow: var(--shadow-md);
+}
+
+.course-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.course-code {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.course-title {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.course-grade {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.course-grade.is-pending {
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+}
+
+.course-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.course-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.course-meta-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.course-meta-value {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* --- Progress bar ---
+   Built by dashboard.js: .course-progress wraps a label row and the bar
+   itself (.course-progress-track > .course-progress-fill, with the fill's
+   width set inline as a percentage). Color is driven by a level modifier
+   class — is-low / is-medium / is-high — so the bar reads as a status
+   indicator, not just a loading meter. Add whichever class matches each
+   course's progress band alongside .course-progress-fill (e.g. below 40%
+   → is-low, 40–75% → is-medium, above 75% → is-high) to get the coded
+   colors below; without one it falls back to the brand color. */
+
+.course-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.course-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--fs-sm);
+}
+
+.course-progress-label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.course-progress-value {
+  font-weight: 700;
+}
+
+.course-progress-track {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  background: var(--color-surface-alt);
+  border-radius: 999px;
+}
+
+.course-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+  transition: width 420ms ease, background-color var(--transition);
+}
+
+.course-progress-fill.is-low {
+  background: var(--color-danger);
+}
+
+.course-progress-fill.is-medium {
+  background: var(--color-warning);
+}
+
+.course-progress-fill.is-high {
+  background: var(--color-success);
+}
+
+.course-schedule {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* --- Announcements --- */
+
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.announcement-item {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.announcement-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.announcement-item.is-urgent {
+  border-left-color: var(--color-danger);
+}
+
+.announcement-date {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+}
+
+.announcement-date-day {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.announcement-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-lg);
+}
+
+.announcement-tag {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+  padding: 2px var(--space-3);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.announcement-item.is-urgent .announcement-tag {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+  color: var(--color-danger);
+}
+
+.announcement-text {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 720px) {
+  .dashboard-welcome {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .announcement-item {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .announcement-date {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
 }
