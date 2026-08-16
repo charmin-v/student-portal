@@ -8,6 +8,22 @@
   <link rel="stylesheet" href="styles/main.css" />
   <style>
     /* Settings styling lives here for now: styles/main.css has no settings section yet. */
+
+    /* Visually hidden but still announced by screen readers — used for the
+       fieldset legends, since the card heading above each fieldset already
+       gives sighted users the equivalent label. */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     .settings {
       padding-block: var(--space-8);
     }
@@ -450,5 +466,6 @@
   <script src="scripts/utils.js"></script>
   <script src="scripts/nav.js"></script>
   <script src="scripts/app.js"></script>
+  <script src="scripts/settings.js"></script>
 </body>
 </html>

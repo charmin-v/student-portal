@@ -1,5 +1,5 @@
 /**
- * Student Portal — theme toggle.
+ * Student Portal — theme toggle and notification preferences.
  *
  * Load after utils.js, ideally near the end of <body> so document.body
  * already exists when this file first runs:
@@ -7,13 +7,26 @@
  *   <script src="scripts/utils.js"></script>
  *   <script src="scripts/settings.js"></script>
  *
- * Applies the saved theme (light / dark / system) to `document.body` as
- * soon as this file executes — not waiting for DOMContentLoaded — so pages
- * don't flash the wrong theme while the rest of the DOM loads. If the page
- * has a `name="theme"` radio group (light/dark/system, as on
- * settings.html), it's synced to the saved value and wired so picking a
- * new option applies and persists it immediately. Exposed as
- * `PortalSettings`.
+ * Theme: applies the saved theme (light / dark / system) to
+ * `document.body` as soon as this file executes — not waiting for
+ * DOMContentLoaded — so pages don't flash the wrong theme while the rest
+ * of the DOM loads. If the page has a `name="theme"` radio group
+ * (light/dark/system, as on settings.html), it's synced to the saved
+ * value and wired so picking a new option applies and persists it
+ * immediately.
+ *
+ * Notifications: if the page has a `name="notifications"` checkbox group
+ * (email/sms/push, as on settings.html), each checkbox is set from the
+ * saved preferences on load, and any change re-saves the whole group.
+ *
+ * Password form: if the page has a `#password-form` (current/new/confirm
+ * password fields, as on settings.html), submission is intercepted,
+ * validates the new password's length and that it matches the confirm
+ * field, shows inline per-field errors plus a whole-form message, and
+ * never actually posts anywhere — there's no backend to change a password
+ * against.
+ *
+ * Exposed as `PortalSettings`.
  */
 (function (global) {
   'use strict';
@@ -268,21 +281,188 @@
     return true;
   }
 
+  /* --- Change password form ---------------------------------------------
+   * Validates and "submits" the #password-form on settings.html (current /
+   * new / confirm password fields, with [data-error-for] slots matching
+   * the same convention auth.js uses for login). There's no backend to
+   * post to, so a valid submission just shows a success message and
+   * resets the form — consistent with the rest of this mock portal. */
+
+  var MIN_NEW_PASSWORD_LENGTH = 8;
+
+  var PASSWORD_MESSAGES = {
+    currentRequired: 'Enter your current password.',
+    newRequired: 'Enter a new password.',
+    newLength: 'New password must be at least ' + MIN_NEW_PASSWORD_LENGTH + ' characters.',
+    confirmRequired: 'Confirm your new password.',
+    confirmMismatch: 'Passwords do not match.'
+  };
+
+  /**
+   * @param {string} value
+   * @returns {string} error message, or '' when acceptable
+   */
+  function checkCurrentPassword(value) {
+    return String(value == null ? '' : value).trim() ? '' : PASSWORD_MESSAGES.currentRequired;
+  }
+
+  /**
+   * @param {string} value
+   * @returns {string} error message, or '' when acceptable
+   */
+  function checkNewPassword(value) {
+    var password = String(value == null ? '' : value);
+    if (!password) return PASSWORD_MESSAGES.newRequired;
+    if (password.length < MIN_NEW_PASSWORD_LENGTH) return PASSWORD_MESSAGES.newLength;
+    return '';
+  }
+
+  /**
+   * @param {string} newValue
+   * @param {string} confirmValue
+   * @returns {string} error message, or '' when acceptable
+   */
+  function checkConfirmPassword(newValue, confirmValue) {
+    var confirmed = String(confirmValue == null ? '' : confirmValue);
+    if (!confirmed) return PASSWORD_MESSAGES.confirmRequired;
+    if (confirmed !== newValue) return PASSWORD_MESSAGES.confirmMismatch;
+    return '';
+  }
+
+  /**
+   * Show or clear the inline error for one field, same [data-error-for]
+   * convention as auth.js's showError.
+   * @param {HTMLFormElement} form
+   * @param {string} name - the control's `name` attribute
+   * @param {string} message - '' clears the error
+   */
+  function showPasswordFieldError(form, name, message) {
+    var slot = form.querySelector('[data-error-for="' + name + '"]');
+    var control = form.elements[name];
+
+    if (slot) {
+      slot.textContent = message;
+      slot.hidden = !message;
+    }
+    if (control) {
+      control.setAttribute('aria-invalid', message ? 'true' : 'false');
+      control.classList.toggle('is-invalid', Boolean(message));
+    }
+  }
+
+  /**
+   * Find or create the whole-form success/error message element, inserted
+   * right before the submit button row so it reads above the action.
+   * @param {HTMLFormElement} form
+   * @returns {HTMLElement}
+   */
+  function ensurePasswordFormMessage(form) {
+    var el = form.querySelector('#password-form-message');
+    if (el) return el;
+
+    el = document.createElement('p');
+    el.id = 'password-form-message';
+    el.className = 'form-message';
+    el.setAttribute('role', 'status');
+    el.hidden = true;
+
+    var foot = form.querySelector('.settings-card-foot');
+    if (foot) {
+      form.insertBefore(el, foot);
+    } else {
+      form.appendChild(el);
+    }
+
+    return el;
+  }
+
+  /**
+   * @param {HTMLElement} el
+   * @param {string} text - empty string hides the message
+   * @param {boolean} isError
+   */
+  function showPasswordFormMessage(el, text, isError) {
+    el.textContent = text;
+    el.hidden = !text;
+    el.classList.toggle('form-message-error', Boolean(isError));
+    el.classList.toggle('form-message-success', Boolean(text) && !isError);
+  }
+
+  /**
+   * Wire the change-password form: submission is always prevented (there's
+   * no backend), validation runs on every attempt, and a valid submission
+   * shows a success message and clears the fields.
+   * @returns {boolean} true when the password form was found and wired
+   */
+  function initPasswordForm() {
+    var form = document.getElementById('password-form');
+    if (!form) return false;
+
+    var messageEl = ensurePasswordFormMessage(form);
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      var currentPassword = form.elements.currentPassword ? form.elements.currentPassword.value : '';
+      var newPassword = form.elements.newPassword ? form.elements.newPassword.value : '';
+      var confirmPassword = form.elements.confirmPassword ? form.elements.confirmPassword.value : '';
+
+      var errors = {
+        currentPassword: checkCurrentPassword(currentPassword),
+        newPassword: checkNewPassword(newPassword),
+        confirmPassword: checkConfirmPassword(newPassword, confirmPassword)
+      };
+
+      var firstInvalidField = null;
+      Object.keys(errors).forEach(function (name) {
+        showPasswordFieldError(form, name, errors[name]);
+        if (errors[name] && !firstInvalidField) firstInvalidField = name;
+      });
+
+      if (firstInvalidField) {
+        showPasswordFormMessage(messageEl, 'Fix the highlighted fields and try again.', true);
+        if (form.elements[firstInvalidField] && form.elements[firstInvalidField].focus) {
+          form.elements[firstInvalidField].focus();
+        }
+        return;
+      }
+
+      showPasswordFormMessage(messageEl, 'Password updated. Use your new password next time you sign in.', false);
+      form.reset();
+
+      // Reset left every field's aria-invalid/is-invalid state untouched,
+      // so clear them explicitly now that the form is back to blank.
+      Object.keys(errors).forEach(function (name) {
+        showPasswordFieldError(form, name, '');
+      });
+    });
+
+    return true;
+  }
+
   function init() {
     var theme = loadTheme();
     var isDark = applyTheme(theme);
     var toggleWired = initToggle();
     watchSystemPreference();
     var notificationsWired = initNotificationToggles();
+    var passwordFormWired = initPasswordForm();
 
     console.log(
       '[Portal] theme ready — choice: ' + theme +
       ', active: ' + (isDark ? 'dark' : 'light') +
       ', toggle: ' + (toggleWired ? 'wired' : 'skipped') +
-      ', notifications: ' + (notificationsWired ? 'wired' : 'skipped')
+      ', notifications: ' + (notificationsWired ? 'wired' : 'skipped') +
+      ', password form: ' + (passwordFormWired ? 'wired' : 'skipped')
     );
 
-    return { theme: theme, isDark: isDark, toggleWired: toggleWired, notificationsWired: notificationsWired };
+    return {
+      theme: theme,
+      isDark: isDark,
+      toggleWired: toggleWired,
+      notificationsWired: notificationsWired,
+      passwordFormWired: passwordFormWired
+    };
   }
 
   ready(init);
@@ -300,6 +480,10 @@
     loadNotificationPrefs: loadNotificationPrefs,
     saveNotificationPrefs: saveNotificationPrefs,
     initNotificationToggles: initNotificationToggles,
+    minNewPasswordLength: MIN_NEW_PASSWORD_LENGTH,
+    checkNewPassword: checkNewPassword,
+    checkConfirmPassword: checkConfirmPassword,
+    initPasswordForm: initPasswordForm,
     init: init
   };
 })(window);
