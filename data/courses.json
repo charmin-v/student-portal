@@ -1,0 +1,47 @@
+[
+  {
+    "courseId": "CS201",
+    "courseName": "Data Structures & Algorithms",
+    "instructor": "Dr. Ananya Rao",
+    "credits": 4,
+    "grade": "A-",
+    "progress": 78,
+    "schedule": "Mon/Wed/Fri · 10:30–11:20 · Room H-201"
+  },
+  {
+    "courseId": "CS210",
+    "courseName": "Operating Systems",
+    "instructor": "Prof. Kiran Deshmukh",
+    "credits": 4,
+    "grade": "B+",
+    "progress": 71,
+    "schedule": "Tue/Thu · 09:00–10:15 · Room H-104"
+  },
+  {
+    "courseId": "CS215",
+    "courseName": "Software Systems Development",
+    "instructor": "Dr. Meera Nair",
+    "credits": 3,
+    "grade": "In Progress",
+    "progress": 55,
+    "schedule": "Mon/Wed · 14:00–15:15 · Lab C-3"
+  },
+  {
+    "courseId": "MA204",
+    "courseName": "Discrete Mathematics",
+    "instructor": "Dr. Sameer Joshi",
+    "credits": 3,
+    "grade": "A",
+    "progress": 84,
+    "schedule": "Tue/Thu/Sat · 08:00–08:50 · Room H-110"
+  },
+  {
+    "courseId": "CS220",
+    "courseName": "Digital Logic Design",
+    "instructor": "Prof. Leela Iyer",
+    "credits": 3,
+    "grade": "B",
+    "progress": 67,
+    "schedule": "Wed/Fri · 11:30–12:45 · Lab E-1"
+  }
+]
